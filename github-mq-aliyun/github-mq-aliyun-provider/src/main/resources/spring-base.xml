@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 采用注释的方式配置bean -->
+    <context:annotation-config />
+    <!-- 配置要扫描的包 -->
+    <context:component-scan base-package="com.javens.*" />
+
+    <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+        <property name="properties" > <!--生产者配置信息-->
+            <props>
+                <prop key="ProducerId">PID-RZJF-BANK-BEIJING2-LOG-TOPIC</prop>
+                <prop key="AccessKey">*****</prop>
+                <prop key="SecretKey">*****</prop>
+                <prop key="TopicId">RZJF-BANK-BEIJING2-LOG-TOPIC</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <!--事务消息-->
+    <bean id="aliyunLocalTransactionChecker" class="com.javens.mq.impl.AliyunLocalTransactionChecker"/>
+    <bean id="transactionProducer" class="com.aliyun.openservices.ons.api.bean.TransactionProducerBean" init-method="start" destroy-method="shutdown">
+        <property name="properties" > <!--事务消息生产者配置信息-->
+            <props>
+                <prop key="ProducerId">PID-RZJF-BANK-BEIJING2-LOG-TOPIC</prop>
+                <prop key="AccessKey">*****</prop>
+                <prop key="SecretKey">*****</prop>
+                <prop key="TopicId">RZJF-BANK-BEIJING2-LOG-TOPIC</prop>
+            </props>
+        </property>
+        <property name="localTransactionChecker" ref="aliyunLocalTransactionChecker"></property>
+    </bean>
+
+</beans>

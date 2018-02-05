@@ -29,6 +29,7 @@
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-beanutils.version>1.8.3</commons-beanutils.version>
         <junit.version>4.12</junit.version>
+        <rabbitmq.client>5.1.2</rabbitmq.client>
     </properties>
 
     <dependencyManagement>
@@ -44,6 +45,12 @@
                 <groupId>com.aliyun.openservices</groupId>
                 <artifactId>ons-client</artifactId>
                 <version>${aliyun.ons.client}</version>
+            </dependency>
+            <!--Rabbitmq Client-->
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rabbitmq.client}</version>
             </dependency>
 
 

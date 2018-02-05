@@ -1,11 +1,19 @@
 ## 消息队列
     github-mq-active   activeMQ
+        github-mq-active-consumer   #消费者
+        github-mq-active-provider   #生产者
     github-mq-aliyun   aliyunMQ
         github-mq-aliyun-consumer   #消费者
         github-mq-aliyun-provider   #生产者
     github-mq-kafka    kafkaMQ
+         github-mq-kafka-consumer   #消费者
+         github-mq-kafka-provider   #生产者
     github-mq-rabbit   rabbitMQ
+        github-mq-rabbit-consumer   #消费者
+        github-mq-rabbit-provider   #生产者
     github-mq-rocket   rocketMQ
+        github-mq-rocket-consumer   #消费者
+        github-mq-rocket-provider   #生产者
 ##  压测环境
     处理器：2.9 GHz Intel Core i7
     内存： 16 GB 1600 MHz DDR3

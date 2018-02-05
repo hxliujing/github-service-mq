@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>github-mq-rabbit-provider</module>
-        <module>github-mq-rabbit-comsumer</module>
+        <module>github-mq-rabbit-consumer</module>
     </modules>
 
 

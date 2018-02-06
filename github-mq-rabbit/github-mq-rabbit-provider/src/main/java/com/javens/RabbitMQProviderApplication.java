@@ -22,7 +22,7 @@ public class RabbitMQProviderApplication {
             ctx.load("spring-base.xml");
             ctx.refresh();
             logger.info("Application start  success----------");
-            produce();
+            //produce();
         } catch (Exception e) {
             e.printStackTrace();
             throw  new RuntimeException("Application context start error");
@@ -38,12 +38,12 @@ public class RabbitMQProviderApplication {
         }
     }
 
-    public static void produce() throws Exception{
+   /* public static void produce() throws Exception{
         RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
         logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),config.getQueueName()));
         ProviderService providerService = SpringContext.getBean(ProviderServiceImpl.class);
         providerService.init();
         providerService.sendMsgSyn("RabbitMQ-1-");
-    }
+    }*/
 
 }

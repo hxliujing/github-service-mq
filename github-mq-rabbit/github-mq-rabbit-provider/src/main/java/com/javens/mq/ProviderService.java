@@ -8,8 +8,7 @@ public interface ProviderService {
      * @param msg
      */
     public void sendMsgSyn(String msg);
-
-    public void init();
+    public void createFactory(boolean durable);
     public void close();
 
 }

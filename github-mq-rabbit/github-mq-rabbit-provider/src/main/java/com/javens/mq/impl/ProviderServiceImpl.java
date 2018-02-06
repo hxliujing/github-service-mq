@@ -14,25 +14,35 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-@Component
+
+
 public class ProviderServiceImpl implements ProviderService {
     protected static final Logger logger = LoggerFactory.getLogger(ProviderServiceImpl.class);
-    @Autowired
-    private RabbitMQConfig rabbitMQConfig;
     ConnectionFactory factory;
     Channel channel;
     Connection connection;
-
-    public ProviderServiceImpl(){
+    String queueName;
+    String host;
+    boolean durable;
+    public ProviderServiceImpl(String host,String queueName){
+        this.queueName = queueName;
+        this.host = host;
     }
 
-    public  void init(){
+    /**
+     * 是否持久化
+     * @param durable
+     *     true: 持久化
+     *     false： 非持久化
+     */
+    public  void createFactory(boolean durable){
+        this.durable = durable;
         factory = new ConnectionFactory();
         try {
+            factory.setHost(host);
             connection = factory.newConnection();
             channel = connection.createChannel();
-            boolean durable = true;//是否持久化
-            channel.queueDeclare(rabbitMQConfig.getQueueName(), durable, false, false, null);
+            channel.queueDeclare(queueName, durable, false, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,16 +58,17 @@ public class ProviderServiceImpl implements ProviderService {
      * @param msg
      */
     public void sendMsgSyn(String msg) {
-        for(int i=0;i<100;i++){
-            String message = msg+ i ;
             try {
-                channel.basicPublish("", rabbitMQConfig.getQueueName(), MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+                if(durable){
+                    channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes());
+                }else{
+                    channel.basicPublish("", queueName, null , msg.getBytes());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 throw  new RuntimeException(e);
             }
-            System.out.println(" [x] Sent '" + message + "'");
-        }
+            System.out.println(" [x] Sent '" + msg + "'");
     }
 
     public void close(){

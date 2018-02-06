@@ -14,7 +14,7 @@
     <context:component-scan base-package="com.javens.*" />
     <bean id="rabbitMQConfig" class="com.javens.mq.RabbitMQConfig">
         <property name="host" value="localhost"/>
-        <property name="queueName" value="hello-2"/>
+        <property name="queueName" value="hello-3"/>
     </bean>
 
 </beans>

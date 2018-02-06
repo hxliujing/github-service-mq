@@ -1,9 +1,14 @@
 package com.javens;
 
 
+import com.javens.mq.ProviderService;
+import com.javens.mq.RabbitMQConfig;
+import com.javens.mq.impl.ProviderServiceImpl;
+import com.javens.spring.SpringContext;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -19,6 +24,7 @@ public class RabbitMQProviderApplication {
             logger.info("Application start  success----------");
             produce();
         } catch (Exception e) {
+            e.printStackTrace();
             throw  new RuntimeException("Application context start error");
         }
         synchronized (RabbitMQProviderApplication.class) {
@@ -32,21 +38,12 @@ public class RabbitMQProviderApplication {
         }
     }
 
-    public static final String QUEUE_NAME = "hello";
     public static void produce() throws Exception{
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        for(int i=0;i<100;i++){
-            String message = "Hello World"+ i ;
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-            System.out.println(" [x] Sent '" + message + "'");
-        }
-
-        channel.close();
-        connection.close();
+        RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
+        logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),config.getQueueName()));
+        ProviderService providerService = SpringContext.getBean(ProviderServiceImpl.class);
+        providerService.init();
+        providerService.sendMsgSyn("RabbitMQ-1-");
     }
 
 }

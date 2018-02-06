@@ -7,7 +7,12 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/util 
         http://www.springframework.org/schema/util/spring-util.xsd">
-
-    <!--spring 普通消息集成 -->
-
+    <!-- 采用注释的方式配置bean -->
+    <context:annotation-config />
+    <!-- 配置要扫描的包 -->
+    <context:component-scan base-package="com.javens.*" />
+    <bean id="rabbitMQConfig" class="com.javens.mq.RabbitMQConfig">
+        <property name="host" value="localhost"/>
+        <property name="queueName" value="hello-2"/>
+    </bean>
 </beans>

@@ -1,6 +1,10 @@
 package com.javens;
 
 
+import com.javens.mq.MessageListener;
+import com.javens.mq.RabbitMQConfig;
+import com.javens.mq.impl.ConsumerMessageListener;
+import com.javens.spring.SpringContext;
 import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,30 +36,12 @@ public class RabbitMQConsumerApplication {
         }
     }
 
-    public static final String QUEUE_NAME = "hello";
     public static void comsumer() throws Exception{
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
-
-        //回调消费消息
-        Consumer consumer = new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-                    throws IOException {
-                String message = new String(body, "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
-            }
-        };
-        channel.basicConsume(QUEUE_NAME, true, consumer);
-
-
-        //channel.close();
-        //connection.close();
+        RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
+        logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),config.getQueueName()));
+        MessageListener messageListener = SpringContext.getBean(ConsumerMessageListener.class);
+        messageListener.init();
+        messageListener.consumer();
     }
 
 }

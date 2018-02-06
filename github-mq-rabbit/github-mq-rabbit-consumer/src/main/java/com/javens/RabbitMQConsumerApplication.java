@@ -21,8 +21,9 @@ public class RabbitMQConsumerApplication {
             ctx.load("spring-base.xml");
             ctx.refresh();
             logger.info("Application start  success----------");
-            comsumerNonPersistent();
-            comsumerPersistent();
+            consumerNonPersistent();
+            consumerPersistent();
+            consumerExchange();
         } catch (Exception e) {
             throw  new RuntimeException("Application context start error");
         }
@@ -41,7 +42,7 @@ public class RabbitMQConsumerApplication {
      * 非持久化消息
      * @throws Exception
      */
-    public static void comsumerNonPersistent() throws Exception{
+    public static void consumerNonPersistent() throws Exception{
         RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
         logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),config.getQueueName()));
         MessageListener messageListener = new ConsumerMessageListener(config.getHost(),config.getQueueName());
@@ -53,11 +54,22 @@ public class RabbitMQConsumerApplication {
      * 持久化消息
      * @throws Exception
      */
-    public static void comsumerPersistent() throws Exception{
+    public static void consumerPersistent() throws Exception{
         RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
         logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),"hello-2"));
         MessageListener messageListener = new ConsumerMessageListener(config.getHost(),"hello-2");
         messageListener.createFactory(true);
+        messageListener.consumer();
+    }
+    /**
+     * 交换机
+     * @throws Exception
+     */
+    public static void consumerExchange() throws Exception{
+        RabbitMQConfig config = SpringContext.getBean(RabbitMQConfig.class);
+        //logger.info(String.format("Host:%s,QUEQUE:%s",config.getHost(),"hello-2"));
+        MessageListener messageListener = new ConsumerMessageListener(config.getHost(),"hello-4");
+        messageListener.createFactory(false,"rz-exchange");
         messageListener.consumer();
     }
 }

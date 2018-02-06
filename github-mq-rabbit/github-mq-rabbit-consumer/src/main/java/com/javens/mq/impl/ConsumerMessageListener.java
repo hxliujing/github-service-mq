@@ -49,6 +49,35 @@ public class ConsumerMessageListener implements MessageListener{
         }
     }
 
+    public  void createFactory(boolean durable,String exchange){
+        factory = new ConnectionFactory();
+        try {
+            factory.setHost(host);
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            //channel.queueDeclare(queueName, durable, false, false, null);
+            /**
+             * 直连交换机（direct）,
+             * 主题交换机（topic）,
+             * （头交换机）headers,
+             * 扇型交换机（fanout） 它把消息发送给它所知道的所有队列
+             */
+            channel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT);
+            queueName = channel.queueDeclare().getQueue();//随机队列名
+            //绑定
+            channel.queueBind(queueName,exchange,"");
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new  RuntimeException(e);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            throw new  RuntimeException(e);
+        }
+    }
+
+
+
     public void consumer(){
         Consumer consumer = new DefaultConsumer(channel) {
             @Override

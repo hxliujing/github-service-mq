@@ -2,10 +2,7 @@ package com.javens.mq.impl;
 
 import com.javens.mq.ProviderService;
 import com.javens.mq.RabbitMQConfig;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.MessageProperties;
+import com.rabbitmq.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +49,48 @@ public class ProviderServiceImpl implements ProviderService {
             throw new  RuntimeException(e);
         }
     }
+    public  void createFactory(boolean durable,String exchange){
+        this.durable = durable;
+        factory = new ConnectionFactory();
+        try {
+            factory.setHost(host);
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            //channel.queueDeclare(queueName, durable, false, false, null);
+            /**
+             * 直连交换机（direct）,
+             * 主题交换机（topic）,
+             * （头交换机）headers,
+             * 扇型交换机（fanout） 它把消息发送给它所知道的所有队列
+             */
+            channel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT);
+            //queueName = channel.queueDeclare().getQueue();//随机队列名
+            //绑定
+            //channel.queueBind(queueName,exchange,"");
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new  RuntimeException(e);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            throw new  RuntimeException(e);
+        }
+    }
+
+    public void sendMsgSyn(String msg,String exchange) {
+        try {
+            if(durable){
+                channel.basicPublish(exchange, "", MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes());
+            }else{
+                channel.basicPublish(exchange, "", null , msg.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw  new RuntimeException(e);
+        }
+        System.out.println(" [x] Sent '" + msg + "'");
+    }
+
 
     /**
      * 发送同步消息

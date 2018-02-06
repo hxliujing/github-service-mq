@@ -70,4 +70,29 @@ public class RabbitMQProviderTest extends BaseSpringTestCase {
         Thread.sleep(1000 * 10);
     }
 
+    /**
+     * 交换机
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @Test
+    public void demoSynExchange() throws ExecutionException, InterruptedException{
+        final ProviderService providerService = new ProviderServiceImpl(config.getHost(),"hello-4");
+        providerService.createFactory(false,"rz-exchange");
+        ConcurrentTestUtil.concurrentTest(100, 50000,
+                new Callable<String>() {
+                    public String call() throws Exception {
+                        String content = String.valueOf("Produce-"+ System.currentTimeMillis()+"-"+ RandomUtil.generateRandom(1,10000));
+                        providerService.sendMsgSyn("RabbitMQ-1-" + content,"rz-exchange");
+                        return content;
+                    }
+                },
+                new ResultHandler<String>(){
+                    public void handle(String result) {
+                        System.out.println(result);
+                    }
+                },
+                1000 * 10000);
+        Thread.sleep(1000 * 10);
+    }
 }

@@ -37,4 +37,26 @@ public class RabbitMQProviderTest extends BaseSpringTestCase {
         Thread.sleep(1000 * 10);
     }
 
+
+    @Test
+    public void demoSyn2() throws ExecutionException, InterruptedException, MQClientException {
+        RocketMQConfig config = SpringContext.getBean(RocketMQConfig.class);
+        final ProviderService providerService = new ProviderServiceImpl(config);
+        providerService.createFactory();
+        ConcurrentTestUtil.concurrentTest(10, 20,
+                new Callable<String>() {
+                    public String call() throws Exception {
+                        String content = String.valueOf("Produce-"+ System.currentTimeMillis()+"-"+ RandomUtil.generateRandom(1,10000));
+                        providerService.sendMsgSyn("RocketMQ-1-" + content);
+                        return content;
+                    }
+                },
+                new ResultHandler<String>(){
+                    public void handle(String result) {
+                        System.out.println(result);
+                    }
+                },
+                1000 * 10000);
+        Thread.sleep(1000 * 10);
+    }
 }

@@ -32,6 +32,7 @@
         <rabbitmq.client>5.1.2</rabbitmq.client>
         <kafkamq.client>1.0.0</kafkamq.client>
         <rocketmq.client>3.6.2.Final</rocketmq.client>
+        <activemq.client>5.15.3</activemq.client>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +77,13 @@
                 <groupId>com.alibaba.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
                 <version>${rocketmq.client}</version>
+            </dependency>
+
+            <!--ACTIVEMQ Client-->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-client</artifactId>
+                <version>${activemq.client}</version>
             </dependency>
 
             <dependency>

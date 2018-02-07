@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 采用注释的方式配置bean -->
+    <context:annotation-config />
+    <!-- 配置要扫描的包 -->
+    <context:component-scan base-package="com.javens.*" />
+    <bean id="rocketMQConfig" class="com.javens.mq.RocketMQConfig">
+        <property name="host" value="localhost:9876"/>
+        <property name="topic" value="RZJF-BANK-BEIJING2-LOG-TOPIC"/>
+        <property name="producerId" value="PID-RZJF-BANK-BEIJING2-LOG-TOPIC"/>
+        <property name="tag" value="1234"/>
+    </bean>
+
+</beans>

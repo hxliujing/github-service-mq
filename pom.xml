@@ -31,6 +31,7 @@
         <junit.version>4.12</junit.version>
         <rabbitmq.client>5.1.2</rabbitmq.client>
         <kafkamq.client>1.0.0</kafkamq.client>
+        <rocketmq.client>3.6.2.Final</rocketmq.client>
     </properties>
 
     <dependencyManagement>
@@ -70,8 +71,12 @@
                 <version>2.1.2.RELEASE</version>
             </dependency>
 
-
-
+            <!--Rocket MQ Client-->
+            <dependency>
+                <groupId>com.alibaba.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.client}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>

@@ -12,9 +12,9 @@
     <context:annotation-config />
     <!-- 配置要扫描的包 -->
     <context:component-scan base-package="com.javens.*" />
-    <bean id="rabbitMQConfig" class="com.javens.mq.RabbitMQConfig">
-        <property name="host" value="localhost"/>
-        <property name="queueName" value="hello-3"/>
+    <bean id="rabbitMQConfig" class="com.javens.mq.KafkaMQConfig">
+        <property name="host" value="localhost:9092"/>
+        <property name="topic" value="RZ-TP-KAFKA"/>
     </bean>
 
 </beans>

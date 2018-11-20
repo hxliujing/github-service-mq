@@ -15,12 +15,27 @@ import java.util.concurrent.ExecutionException;
 
 public class RabbitMQProviderTest extends BaseSpringTestCase {
 
+
+    @Test
+    public void demoSyn4() throws ExecutionException, InterruptedException, MQClientException {
+        RocketMQConfig config = SpringContext.getBean(RocketMQConfig.class);
+        final ProviderService providerService = new ProviderServiceImpl(config);
+        providerService.createFactory();
+        for(int i=0;i<999;i++){
+            String content = String.valueOf("Produce-"+ System.currentTimeMillis()+"-"+ RandomUtil.generateRandom(1,10000));
+            providerService.sendMsgSyn("RocketMQ-1-" + content);
+            Thread.sleep(1000 * 2);
+        }
+
+    }
+
+
     @Test
     public void demoSyn() throws ExecutionException, InterruptedException, MQClientException {
         RocketMQConfig config = SpringContext.getBean(RocketMQConfig.class);
         final ProviderService providerService = new ProviderServiceImpl(config);
         providerService.createFactory();
-        ConcurrentTestUtil.concurrentTest(100, 50000,
+        ConcurrentTestUtil.concurrentTest(10, 100,
                 new Callable<String>() {
                     public String call() throws Exception {
                         String content = String.valueOf("Produce-"+ System.currentTimeMillis()+"-"+ RandomUtil.generateRandom(1,10000));

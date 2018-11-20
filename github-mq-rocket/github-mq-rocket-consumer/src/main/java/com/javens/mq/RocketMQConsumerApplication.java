@@ -23,15 +23,6 @@ public class RocketMQConsumerApplication {
             e.printStackTrace();
             throw  new RuntimeException("Application context start error");
         }
-        synchronized (RocketMQConsumerApplication.class) {
-            while (true) {
-                try {
-                    RocketMQConsumerApplication.class.wait();
-                } catch (InterruptedException e) {
-                    throw  new RuntimeException("synchronized error");
-                }
-            }
-        }
     }
 
 }

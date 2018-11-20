@@ -16,7 +16,7 @@
         <property name="host" value="localhost:9876"/>
         <property name="topic" value="RZJF-BANK-BEIJING2-LOG-TOPIC"/>
         <property name="producerId" value="PID-RZJF-BANK-BEIJING2-LOG-TOPIC"/>
-        <property name="tag" value="1234"/>
+        <property name="tag" value="TAG1"/>
     </bean>
 
 </beans>

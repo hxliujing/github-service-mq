@@ -32,7 +32,7 @@ public class ProviderServiceImpl implements ProviderService {
         consumer = new DefaultMQPushConsumer("ProducerGroupName");
         consumer.setNamesrvAddr(config.getHost());
         consumer.setInstanceName("Consumber");
-        consumer.subscribe(config.getTopic(),"*");
+        consumer.subscribe(config.getTopic(),config.getTag());
         consumer.setConsumeMessageBatchMaxSize(50);
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             /**

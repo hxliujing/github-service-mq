@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class ProviderServiceImpl implements ProviderService {
@@ -41,14 +43,36 @@ public class ProviderServiceImpl implements ProviderService {
             public ConsumeConcurrentlyStatus consumeMessage(
                     List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                 for(MessageExt msg : msgs){
-                    System.out.println("Receive: " +  new String(msg.getBody()));
+                    System.out.println(msg.getTags()+"|Receive: " +  new String(msg.getBody()));
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
         consumer.start();
+
+       change();
     }
 
+    private void change() {
+        /*new Thread(new Runnable() {
+            public void run() {
+               while (true){
+                   try {
+                       Thread.sleep(1000 * 10);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   if(consumer!=null){
+                       try {
+                           consumer.subscribe(config.getTopic(),"TAG2");
+                       } catch (MQClientException e) {
+                           e.printStackTrace();
+                       }
+                   }
+               }
+            }
+        }).start();*/
+    }
 
 
     public void close(){

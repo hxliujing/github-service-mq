@@ -10,6 +10,15 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 public class RocketMQConsumerApplication {
     protected static final Logger logger = LoggerFactory.getLogger(RocketMQConsumerApplication.class);
 
+
+    public void start(){
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run(){
+                System.out.println("Execute Hook.....");
+            }
+        }));
+    }
+
     public static void main(String[] args) {
         try {
             GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
@@ -19,6 +28,11 @@ public class RocketMQConsumerApplication {
             RocketMQConfig config = SpringContext.getBean(RocketMQConfig.class);
             ProviderService providerService = new ProviderServiceImpl(config);
             providerService.createFactory();
+
+            //shutdown hook
+            new RocketMQConsumerApplication().start();
+
+
         } catch (Exception e) {
             e.printStackTrace();
             throw  new RuntimeException("Application context start error");

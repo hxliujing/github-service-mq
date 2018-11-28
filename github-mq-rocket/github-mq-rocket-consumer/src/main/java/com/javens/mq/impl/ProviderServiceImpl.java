@@ -3,11 +3,15 @@ package com.javens.mq.impl;
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import com.alibaba.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import com.alibaba.rocketmq.client.exception.MQBrokerException;
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.alibaba.rocketmq.client.producer.SendResult;
+import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
 import com.alibaba.rocketmq.common.message.Message;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
@@ -31,25 +35,38 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
    public  void createFactory() throws MQClientException {
-        consumer = new DefaultMQPushConsumer("ProducerGroupName");
+        consumer = new DefaultMQPushConsumer("consumer-group-name");
         consumer.setNamesrvAddr(config.getHost());
-        consumer.setInstanceName("Consumber");
-        consumer.subscribe(config.getTopic(),config.getTag());
-        consumer.setConsumeMessageBatchMaxSize(50);
-        consumer.registerMessageListener(new MessageListenerConcurrently() {
-            /**
-             * 默认msgs里只有一条消息，可以通过设置consumeMessageBatchMaxSize参数来批量接收消息
-             */
-            public ConsumeConcurrentlyStatus consumeMessage(
-                    List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                for(MessageExt msg : msgs){
+        //consumer.setInstanceName("consumer");
+       /**
+        * 设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费<br>
+        * 如果非第一次启动，那么按照上次消费的位置继续消费
+        */
+       consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+       consumer.subscribe(config.getTopic(),config.getTag());
+       consumer.setConsumeMessageBatchMaxSize(50);
+       /**
+        * 实现了MessageListenerOrderly表示一个队列只会被一个线程取到
+        *，第二个线程无法访问这个队列
+        */
+       consumer.registerMessageListener(new MessageListenerOrderly() {
+           public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
+               // 设置自动提交
+               context.setAutoCommit(true);
+               for(MessageExt msg : msgs){
+                   System.out.println(config.getTopic()+"|" + msg.getTags()+"|Receive: " +  new String(msg.getBody()));
+               }
+               return ConsumeOrderlyStatus.SUCCESS;
+           } });
+       /*consumer.registerMessageListener(new MessageListenerConcurrently() {
+           public ConsumeConcurrentlyStatus consumeMessage(
+                   List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+               for(MessageExt msg : msgs){
                     System.out.println(msg.getTags()+"|Receive: " +  new String(msg.getBody()));
-                }
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-            }
-        });
-        consumer.start();
-
+               }
+               return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+       }});*/
+       consumer.start();
        change();
     }
 

@@ -1,7 +1,7 @@
 package com.javens.mq;
 
 
-import com.javens.mq.impl.ProviderServiceImpl;
+import com.javens.mq.impl.ConsumerService;
 import com.javens.spring.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,7 @@ public class RocketMQConsumerApplication {
             ctx.refresh();
             logger.info("Application start  success----------");
             RocketMQConfig config = SpringContext.getBean(RocketMQConfig.class);
-            ProviderService providerService = new ProviderServiceImpl(config);
-            providerService.createFactory();
+            new ConsumerService(config);
 
             //shutdown hook
             new RocketMQConsumerApplication().start();
